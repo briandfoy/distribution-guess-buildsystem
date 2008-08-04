@@ -141,6 +141,34 @@ sub build_files
 
 }
 
+=item preferred_build_file
+
+Returns the build file that you should use, even if there is more than
+one. Right now this is simple. If C<Build.PL> is there, use it before
+C<Makefile.PL>.
+
+=cut
+
+sub preferred_build_file
+	{
+	return $_[0]->build_pl    if $_[0]->has_build_pl;
+	return $_[0]->makefile_pl if $_[0]->has_makefile_pl;
+	}
+
+=item preferred_build_command
+
+Returns the build command that you should use, even if there is more than
+one. Right now this is simple. If C<Build.PL> is there, return C<perl>.
+If not and C<Makefile.PL> is there, return C<make>.
+
+=cut
+
+sub preferred_build_command
+	{
+	return $_[0]->perl_command if $_[0]->has_build_pl;
+	return $_[0]->make_command if $_[0]->has_makefile_pl;
+	}
+	
 =item build_file_paths
 
 Returns an anonymous hash to the paths to the build files, based on

@@ -32,6 +32,7 @@ can_ok( $guesser,
 	qw(
 	build_commands build_files build_file_paths 
 	build_pl build_pl_path
+	preferred_build_file preferred_build_command
 	) 
 	);
 
@@ -68,6 +69,12 @@ is( scalar keys %$hash, 1, "There is only one hash key in build_commands" );
 my @keys = keys %$hash;
 
 like( $keys[0], qr/perl/, 'Uses a make variant' );
+
+is( $guesser->preferred_build_file, $guesser->build_pl,
+	"the preferred build file is a Module::Build variant" );
+
+is( $guesser->preferred_build_command, $guesser->perl_command,
+	"the preferred build command is a make variant" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

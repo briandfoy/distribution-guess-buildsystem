@@ -35,6 +35,7 @@ can_ok( $guesser,
 	build_commands build_files build_file_paths
 	has_build_pl has_build_and_makefile 
 	uses_module_install uses_auto_install
+	preferred_build_file preferred_build_command
 	) 
 	);
 
@@ -53,6 +54,12 @@ is( scalar keys %$paths, 1, "Only one path from build_file_path" );
 
 is( $paths->{ $guesser->makefile_pl }, $guesser->makefile_pl_path, 
 	'build_files_paths matches makefile_pl_path' );
+
+is( $guesser->preferred_build_file, $guesser->makefile_pl,
+	"the preferred build command is a make variant" );
+
+is( $guesser->preferred_build_command, $guesser->make_command,
+	"the preferred build command is a make variant" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

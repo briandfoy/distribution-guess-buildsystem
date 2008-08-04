@@ -34,6 +34,7 @@ can_ok( $guesser,
 	makefile_pl	makefile_pl_path
 	build_pl build_pl_path
 	build_commands build_files build_file_paths
+	preferred_build_file preferred_build_command
 	) 
 	);
 
@@ -64,6 +65,12 @@ my @keys = sort keys %$hash;
 
 ok( scalar grep { /^[dn]?make\z/ } @keys, 'Uses a make variant' );
 ok( scalar grep { /perl/         } @keys, 'Uses perl' );
+
+is( $guesser->preferred_build_file, $guesser->build_pl,
+	"the preferred build file is a Module::Build variant" );
+
+is( $guesser->preferred_build_command, $guesser->perl_command,
+	"the preferred build command is a make variant" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
