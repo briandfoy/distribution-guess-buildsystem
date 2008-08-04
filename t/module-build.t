@@ -74,7 +74,7 @@ like( $keys[0], qr/perl/, 'Uses a make variant' );
 # These should return true
 {
 my @pass_methods = qw(
-	has_build_pl uses_module_build
+	has_build_pl uses_module_build module_build_version
 	);
 
 can_ok( $class, @pass_methods );
@@ -92,6 +92,7 @@ my @fail_methods = qw(
 	has_build_and_makefile uses_module_build_compat
 	uses_makemaker has_makefile_pl
 	uses_module_install uses_auto_install
+	makemaker_version module_install_version
 	);
 
 can_ok( $class, @fail_methods );

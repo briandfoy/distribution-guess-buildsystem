@@ -11,11 +11,11 @@ use vars qw($VERSION);
 use Carp qw(carp);
 use Config qw(%Config);
 use Cwd;
-use File::Spec;
+use File::Spec::Functions qw(catfile);
 
 use Module::Extract::VERSION;
 
-$VERSION = '0.10_01';
+$VERSION = '0.10_02';
 
 =head1 NAME
 
@@ -25,11 +25,13 @@ Distribution::Guess::BuildSystem - This is the description
 
 	use Distribution::Guess::BuildSystem;
 
+	chdir $dist_dir;
+	
 	my $guesser = Distribution::Guess::BuildSystem->new(
 		dist_dir => $dir
 		);
 	
-	my $build_file    = $guesser->build_files; # Hash ref
+	my $build_files    = $guesser->build_files; # Hash ref
 	
 	my $build_pl      = $guesser->has_build_pl;
 	my $makefile_pl   = $guesser->has_makefile_pl;
@@ -72,6 +74,8 @@ use C<auto_install> to call C<CPAN.pm> at build time.
 
 =back
 
+The trick is to figure out which one you are supposed to use.
+
 =head2 Methods
 
 =over 4
@@ -110,7 +114,8 @@ sub dist_dir
 
 =item build_files
 
-Returns an array reference of build files found in the distribution.
+Returns an hash reference of build files found in the distribution. The
+keys are the filenames of the build files. The values 
 
 =cut
 
@@ -279,9 +284,29 @@ sub makemaker_version
 	{
 	return unless $_[0]->uses_makemaker;
 	
-	my $version = $_[0]->get_version( $_[0]->makemaker_name );
+	my $version = $_[0]->_get_version( $_[0]->makemaker_name );
 	}
 
+sub _get_version
+	{
+	require Module::Extract::VERSION;
+	
+	my( $self, $module, @dirs ) = @_;
+	
+	@dirs = @INC unless @dirs;
+	
+	my $file = catfile( split /::/, $module ) . ".pm";
+	
+	foreach my $dir ( @dirs )
+		{
+		my $module = catfile( $dir, $file );
+		next unless -e $module;
+		
+		return Module::Extract::VERSION->parse_version_safely( $module );
+		}
+		
+	}
+	
 =item uses_module_build
 
 Returns true if this distribution uses C<Module::Build>.
@@ -308,7 +333,7 @@ sub module_build_version
 	{
 	return unless $_[0]->uses_module_build;
 
-	my $version = $_[0]->get_version( $_[0]->module_build_name );
+	my $version = $_[0]->_get_version( $_[0]->module_build_name );
 	}
 
 =item uses_module_install
@@ -354,7 +379,7 @@ sub module_install_version
 	{
 	return unless $_[0]->uses_module_install;
 
-	my $version = $_[0]->get_version( 
+	my $version = $_[0]->_get_version( 
 		 $_[0]->module_install_name,  $_[0]->module_install_dir
 		);
 	}
@@ -403,7 +428,48 @@ sub _file_has_string
 		
 	return;
 	}
+
+=item just_give_me_a_hash
+
+=cut
+
+{
+my @methods = qw(
+	dist_dir
+	build_files
+	build_file_paths
+	makefile_pl_path
+	build_pl_path
+	has_build_pl
+	has_makefile_pl
+	has_build_and_makefile
+	make_command
+	perl_command
+	build_commands
+	uses_makemaker
+	makemaker_version
+	uses_module_build
+	module_build_version
+	uses_module_install
+	uses_auto_install
+	module_install_version
+	uses_module_build_compat
+	build_pl_wraps_makefile_pl
+	);
+
+sub just_give_me_a_hash
+	{
+	my %hash = ();
+		
+	foreach my $method ( @methods )
+		{
+		$hash{ $method } = $_[0]->$method();
+		}
 	
+	return \%hash;
+	}
+}
+
 =back
 
 =head2 Methods for strings
@@ -459,11 +525,12 @@ sub module_install_name { 'inc::Module::Install' }
 
 =item module_install_dir
 
-Returns the directory that contains Module::Install. This is C<inc> by default.
+Returns the directory that contains Module::Install. This is the distribution
+directory because the module name is actually C<inc::Module::Install>.
 
 =cut
 
-sub module_install_dir  { 'inc' }
+sub module_install_dir  { $_[0]->dist_dir }
 
 =item module_extractor_class
 

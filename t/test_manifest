@@ -11,3 +11,4 @@ module-build.t
 module-install.t
 module-install-autoinstall.t
 module-build-compat.t
+just_give_me_a_hash.t

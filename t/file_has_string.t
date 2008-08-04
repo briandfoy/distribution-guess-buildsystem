@@ -3,6 +3,8 @@ use strict;
 use warnings;
 
 use Test::More 'no_plan';
+use Test::Output;
+
 use File::Spec;
 
 my $class = 'Distribution::Guess::BuildSystem';
@@ -12,6 +14,7 @@ use_ok( $class );
 can_ok( $class, '_file_has_string' );
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# These tests pass
 {
 my $pass_tests = {
 	't/test-distros/makemaker-true/Makefile.PL'             => 'MakeMaker',
@@ -29,6 +32,7 @@ foreach my $file ( sort keys %$pass_tests )
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# These tests fail because the right string is not in the file
 {
 my $fail_tests = {
 	't/test-distros/makemaker-true/Makefile.PL'             => 'Build.PL',
@@ -43,4 +47,13 @@ foreach my $file ( sort keys %$fail_tests )
 	
 	ok( ! $class->_file_has_string( $name, $fail_tests->{$file} ) );
 	}
+}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# These tests fail because the file is missing
+{
+stderr_like
+	{ $class->_file_has_string( 'foo/bar/baz', 'Buster' ) }
+	qr/not open/,
+	"fails for non-existent file";
 }

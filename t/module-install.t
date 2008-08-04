@@ -76,7 +76,7 @@ like( $keys[0], qr/^[dn]?make\z/, 'Uses a make variant' );
 # These should return true
 {
 my @pass_methods = qw(
-	has_makefile_pl uses_module_install
+	has_makefile_pl uses_module_install module_install_version
 	);
 
 can_ok( $class, @pass_methods );
