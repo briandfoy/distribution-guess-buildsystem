@@ -19,3 +19,5 @@ t/cover_db*
 ^cover_db\b
 prereq\.t
 Distribution
+\.git
+\.gitignore

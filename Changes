@@ -1,3 +1,4 @@
+# Changes for Distribution::Guess::BuildSystem
 
 0.10_02 - Mon Aug  4 03:50:42 2008
 	* Add just_give_me_a_hash() to get a hash of all of the method
@@ -7,6 +8,3 @@
 0.10_01 - Sat Aug  2 20:48:48 2008
 	* first release of a module to guess the build system on a 
 	Perl module distribution
-
-0.10_01 - Wed Jul 30 03:35:10 2008
-
