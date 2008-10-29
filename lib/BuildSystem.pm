@@ -292,14 +292,19 @@ The distro uses ExtUtils::Makemaker.
 
 =cut
 
+sub _get_modules
+	{
+	my( $self, $path ) = @_;
+	my $extractor = $self->module_extractor_class->new;
+	$extractor->get_modules( $path );	
+	}
+	
 sub uses_makemaker
 	{
 	return unless $_[0]->has_makefile_pl;
-
-	scalar grep { $_ eq $_[0]->makemaker_name }
-		$_[0]->module_extractor_class->get_modules( 
-			$_[0]->makefile_pl_path
-			);
+	
+	scalar grep { $_ eq $_[0]->makemaker_name } 
+		$_[0]->_get_modules( $_[0]->makefile_pl_path )
 	}
 
 =item makemaker_version
@@ -345,10 +350,8 @@ sub uses_module_build
 	{
 	return unless $_[0]->has_build_pl;
 
-	scalar grep { $_ eq $_[0]->module_build_name }
-		$_[0]->module_extractor_class->get_modules( 
-			$_[0]->build_pl_path
-			);
+	scalar grep { $_ eq $_[0]->module_build_name } 
+		$_[0]->_get_modules( $_[0]->build_pl_path )
 	}
 
 =item module_build_version
@@ -374,10 +377,8 @@ sub uses_module_install
 	{		
 	return unless $_[0]->has_makefile_pl;
 
-	scalar grep { $_ eq $_[0]->module_install_name }
-		$_[0]->module_extractor_class->get_modules( 
-			$_[0]->makefile_pl_path
-			);
+	scalar grep { $_ eq $_[0]->module_install_name } 
+		$_[0]->_get_modules( $_[0]->makefile_pl_path )
 	}
 
 =item uses_auto_install
