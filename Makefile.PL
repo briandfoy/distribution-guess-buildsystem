@@ -13,9 +13,9 @@ WriteMakefile(
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
 	'PREREQ_PM'    => { 
-		'Test::More'              => '0',
-		'Module::Extract::Use'    => "0",
-		'Module::Extact::VERSION' => "0",
+		'Test::More'               => '0',
+		'Module::Extract::Use'     => "0",
+		'Module::Extract::VERSION' => "0",
 		},
 
 	'PM'           => {
