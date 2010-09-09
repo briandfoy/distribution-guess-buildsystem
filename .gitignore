@@ -2,3 +2,5 @@ Makefile
 Distribution-*
 blib
 pm_to_blib
+.DS_Store
+cover_db
