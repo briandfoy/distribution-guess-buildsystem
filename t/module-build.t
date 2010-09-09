@@ -82,6 +82,7 @@ is( $guesser->preferred_build_command, $guesser->perl_command,
 {
 my @pass_methods = qw(
 	has_build_pl uses_module_build module_build_version
+	uses_module_build_only
 	);
 
 can_ok( $class, @pass_methods );
@@ -100,6 +101,7 @@ my @fail_methods = qw(
 	uses_makemaker has_makefile_pl
 	uses_module_install uses_auto_install
 	makemaker_version module_install_version
+	uses_makemaker_only make_command makefile_pl_path
 	);
 
 can_ok( $class, @fail_methods );

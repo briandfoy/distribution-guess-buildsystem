@@ -109,6 +109,8 @@ foreach my $method ( @pass_methods )
 my @fail_methods = qw(
 	uses_module_build_compat
 	uses_module_install uses_auto_install
+	uses_makemaker_only
+	uses_module_build_only
 	);
 
 can_ok( $class, @fail_methods );
@@ -118,5 +120,5 @@ foreach my $method ( @fail_methods )
 	ok( ! $guesser->$method(), "$method returns false (good)" );
 	}
 }
-	
+
 1;

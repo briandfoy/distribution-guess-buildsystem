@@ -8,14 +8,14 @@ no warnings;
 use subs qw();
 use vars qw($VERSION);
 
-use Carp qw(carp);
-use Config qw(%Config);
-use Cwd;
+use Carp                  qw(carp);
+use Config                qw(%Config);
+use Cwd                   qw(cwd);
 use File::Spec::Functions qw(catfile);
 
 use Module::Extract::VERSION;
 
-$VERSION = '0.11';
+$VERSION = '0.12';
 
 =head1 NAME
 
@@ -74,7 +74,11 @@ use C<auto_install> to call C<CPAN.pm> at build time.
 
 =back
 
-The trick is to figure out which one you are supposed to use.
+The trick is to figure out which one you are supposed to use. This module has
+several methods to look at a distribution and guess what its build system is.
+The main object is simply some settings. Every time you want to ask a 
+question about the distribution, the object looks at the distribution. That is,
+it doesn't capture the information when you create the object. 
 
 =head2 Methods
 
@@ -82,30 +86,105 @@ The trick is to figure out which one you are supposed to use.
 
 =item new
 
-	dist_dir
+Creates a new guesser object. You can set:
+
+	dist_dir            - the distribution directory (where the build file is)
+	perl_binary         - the path to the perl you want to use
+	prefer_module_build - some methods will return the preferred builder
+	prefer_makemaker    - some methods will return the preferred builder
+
+If you prefer 
+The defaults are:
 	
+	dist_dir            - current working directory
+	perl_binary         - $^X (may be relative and no longer in path!)
+	prefer_module_build - true
+	prefer_makemaker    - false
+
 =cut
 
 sub new
 	{
-	my %defaults = { dist_dir => cwd() };
+	my %defaults = ( 
+		dist_dir            => cwd(),
+		prefer_module_build => 1,
+		prefer_makemaker    => 0,		
+		perl_binary         => $^X,
+		);
 	
 	my( $class, %args ) = @_;
 	
-	@defaults{ keys %args } = values %args;
-	
-	bless { dist_dir => $args{dist_dir} }, $_[0];
+	bless { %defaults, %args }, $class;
 	}
 
-=item dist_dir
+=item dist_dir( [ DIR ] )
+
+Returns or sets the distribution directory.
 
 =cut
 
 sub dist_dir
 	{
-	$_[0]->{dist_dir}
+	my( $self ) = shift;
+	$self->_setting( 'dist_dir', @_ );
 	}
 
+=item perl_binary( [PERL] )
+
+Returns or sets the perl binary path. This is either the one that you set
+or the value of C<$^X>. There's no check to verify that this is actually
+a perl binary.
+
+=cut
+
+sub perl_binary
+	{
+	my( $self ) = shift;
+	$self->_setting( 'perl_binary', @_ );
+	}
+
+=item prefer_makemaker( [TRUE|FALSE] )
+
+Returns or sets the Module::Build preference. If this is true, some of
+the methods preferentially return answers for Module::Build over
+MakeMaker when a distribution can use both systems. If both
+C<prefer_makemaker> and C<prefer_module_build> are true, then
+MakeMaker wins.
+=cut
+
+sub prefer_makemaker
+	{
+	my( $self ) = shift;
+	$self->_setting( 'prefer_makemaker', @_ );
+	}
+
+=item prefer_module_build( [TRUE|FALSE] )
+
+Returns or sets the Module::Build preference. If this is true, some of
+the methods preferentially return answers for Module::Build over
+MakeMaker when a distribution can use both systems. If both
+C<prefer_makemaker> and C<prefer_module_build> are true, then
+MakeMaker wins.
+
+=cut
+
+sub prefer_module_build
+	{
+	my( $self ) = shift;
+	$self->_setting( 'prefer_module_build', @_ );
+	}
+
+sub _setting
+	{
+	my( $self, $key, $value ) = @_;
+	
+	if( @_ == 3 ) {
+		$self->{$key} = $value;
+		}
+
+	return $self->{$key};
+	}
+	
 =back
 
 =head2 Questions about the distribution
@@ -122,7 +201,7 @@ keys are the filenames of the build files. The values
 {
 my @files = (
 	[ qw( has_makefile_pl makefile_pl ) ],
-	[ qw( has_build_pl build_pl ) ],
+	[ qw( has_build_pl    build_pl ) ],
 
 	);
 	
@@ -144,29 +223,52 @@ sub build_files
 =item preferred_build_file
 
 Returns the build file that you should use, even if there is more than
-one. Right now this is simple. If C<Build.PL> is there, use it before
-C<Makefile.PL>.
+one. Right now this is simple:
+
+1. In the single build file distributions, return that build file
+
+2. If you've specified a preference with C<prefer_module_build> or
+C<prefer_makemaker>, use that.
+
+3. If there is no preference (both are false), prefer C<Module::Build>.
+
+4. If no of those work, return nothing.
 
 =cut
 
 sub preferred_build_file
 	{
-	return $_[0]->build_pl    if $_[0]->has_build_pl;
-	return $_[0]->makefile_pl if $_[0]->has_makefile_pl;
+	# preference doesn't matter in single build system cases
+	return $_[0]->makefile_pl if $_[0]->uses_makemaker_only;
+	return $_[0]->build_pl    if $_[0]->uses_module_build_only;
+
+	# preference now matter
+	return $_[0]->build_pl if( 
+		$_[0]->prefer_module_build and $_[0]->uses_module_build );
+	return $_[0]->makefile_pl if( 
+		$_[0]->prefer_makemaker and $_[0]->uses_makemaker );
+
+	# absence of preference
+	return $_[0]->build_pl    if $_[0]->uses_module_build;
+	return $_[0]->makefile_pl if $_[0]->uses_makemaker;
+	
+	# no build system?
+	return;
 	}
 
 =item preferred_build_command
 
-Returns the build command that you should use, even if there is more than
-one. Right now this is simple. If C<Build.PL> is there, return C<perl>.
-If not and C<Makefile.PL> is there, return C<make>.
+Returns the build command that you should use. This uses the logic of
+C<preferred_build_file>. It returns the result of either C<perl_command>
+or C<make_command>.
 
 =cut
 
 sub preferred_build_command
 	{
-	return $_[0]->perl_command if $_[0]->has_build_pl;
-	return $_[0]->make_command if $_[0]->has_makefile_pl;
+	return $_[0]->perl_command if $_[0]->preferred_build_file eq $_[0]->build_pl;
+	return $_[0]->make_command if $_[0]->preferred_build_file eq $_[0]->makefile_pl;
+	return;
 	}
 	
 =item build_file_paths
@@ -258,10 +360,18 @@ sub has_build_and_makefile
 Looks in %Config to see what perl discovered when someone built it if you
 can use a C<make> variant to build the distribution.
 
+=cut
+
+sub make_command { $_[0]->has_makefile_pl ? $Config{make}       : () }
+
 =item perl_command
 
-Returns the perl currently running if you can use perl to build the
-distribution.
+Returns the perl currently running. This is the perl that you would use
+to run the F<Makefile.PL> or F<Build.PL>.
+
+=cut
+
+sub perl_command { $_[0]->has_build_pl    ? $_[0]->perl_binary : () }
 
 =item build_commands
 
@@ -270,8 +380,6 @@ distribution. The keys are the commands, such as C<make> or C<perl Build.PL>.
 
 =cut
 
-sub make_command { $_[0]->has_makefile_pl ? $Config{make} : () }
-sub perl_command { $_[0]->has_build_pl    ? $^X           : () }
 
 sub build_commands
 	{
@@ -288,7 +396,7 @@ sub build_commands
 
 =item uses_makemaker
 
-The distro uses ExtUtils::Makemaker.
+Returns true if the distro uses C<ExtUtils::Makemaker>.
 
 =cut
 
@@ -305,6 +413,22 @@ sub uses_makemaker
 	
 	scalar grep { $_ eq $_[0]->makemaker_name } 
 		$_[0]->_get_modules( $_[0]->makefile_pl_path )
+	}
+
+=item uses_makemaker_only
+
+Returns true if MakeMaker is the only build system. Knowing that can cut
+down on the logic quite a bit since you don't have to choose between
+possibilities or preferences.
+
+=cut
+
+sub uses_makemaker_only
+	{
+	return unless $_[0]->has_makefile_pl;
+	return if     $_[0]->has_build_pl;
+
+	return 1;	
 	}
 
 =item makemaker_version
@@ -342,7 +466,8 @@ sub _get_version
 	
 =item uses_module_build
 
-Returns true if this distribution uses C<Module::Build>.
+Returns true if this distribution uses C<Module::Build>. This means that it
+has a F<Build.PL> and that the F<Build.PL> actually uses C<Module::Build>.
 
 =cut
 
@@ -351,7 +476,23 @@ sub uses_module_build
 	return unless $_[0]->has_build_pl;
 
 	scalar grep { $_ eq $_[0]->module_build_name } 
-		$_[0]->_get_modules( $_[0]->build_pl_path )
+		$_[0]->_get_modules( $_[0]->build_pl_path );
+	}
+
+=item uses_module_build_only
+
+Returns true if C<Module::Build> is the only build system. Knowing that can cut
+down on the logic quite a bit since you don't have to choose between
+possibilities or preferences.
+
+=cut
+
+sub uses_module_build_only
+	{
+	return unless $_[0]->has_build_pl;
+	return if     $_[0]->has_makefile_pl;
+
+	return 1;	
 	}
 
 =item module_build_version

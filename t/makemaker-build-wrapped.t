@@ -66,10 +66,12 @@ my @keys = sort keys %$hash;
 ok( scalar grep { /^[dn]?make\z/ } @keys, 'Uses a make variant' );
 ok( scalar grep { /perl/         } @keys, 'Uses perl' );
 
-is( $guesser->preferred_build_file, $guesser->build_pl,
-	"the preferred build file is a Module::Build variant" );
+# This Build.PL is a faker. It's just a wrapper around Makefile.PL,
+# so it doesn't really use Build.PL
+is( $guesser->preferred_build_file, $guesser->makefile_pl,
+	"the preferred build file is a MakeMaker variant" );
 
-is( $guesser->preferred_build_command, $guesser->perl_command,
+is( $guesser->preferred_build_command, $guesser->make_command,
 	"the preferred build command is a make variant" );
 }
 
@@ -97,6 +99,7 @@ my @fail_methods = qw(
 	uses_module_build_compat
 	uses_module_install 
 	uses_auto_install
+	uses_module_build_only
 	);
 
 can_ok( $class, @fail_methods );
