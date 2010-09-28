@@ -1,5 +1,9 @@
 # Changes for Distribution::Guess::BuildSystem
 
+0.11 - Wed Oct 29 15:55:32 2008
+	* Changes to use the new Module::Extract::Use interface,
+	which doesn't use class methods anymore.
+
 0.10_02 - Mon Aug  4 03:50:42 2008
 	* Add just_give_me_a_hash() to get a hash of all of the method
 	names and what they would return. This way you get all of the
