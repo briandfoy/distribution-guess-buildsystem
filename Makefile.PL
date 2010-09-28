@@ -1,9 +1,8 @@
-# $Id: Makefile.PL,v 1.4 2004/07/04 17:04:17 comdog Exp $
-use ExtUtils::MakeMaker;
+use ExtUtils::MakeMaker 6.55;
 
-require 5.006;
+require 5.010;
 
-eval "use Test::Manifest 1.14";
+eval "use Test::Manifest 1.21";
 
 WriteMakefile(
 	'NAME'	       => 'Distribution::Guess::BuildSystem',
@@ -12,6 +11,15 @@ WriteMakefile(
 	'LICENSE'      => 'perl',
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
+	'CONFIGURE_REQUIRES' => {
+		'ExtUtils::MakeMaker' => '6.55',
+		},
+		
+	'BUILD_REQUIRES' => {
+		'Test::More'               => '0',
+		'Test::Output'             => '0',
+		},
+		
 	'PREREQ_PM'    => { 
 		'Test::More'               => '0',
 		'Module::Extract::Use'     => "0",
@@ -23,7 +31,7 @@ WriteMakefile(
 		},
 
 	'MAN3PODS'     => {
-		'lib/BuildSystem.pm' => '$(INST_MAN3DIR)/Distribution::Guess::BuildSystem.3',
+		'lib/BuildSystem.pm' => '$(INST_MAN3DIR)/Distribution::Guess::BuildSystem.$(MAN3EXT)',
 		},
 
 	clean  => { FILES    => q|Distribution-Guess-BuildSystem-*| },
