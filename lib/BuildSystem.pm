@@ -266,7 +266,7 @@ or C<make_command>.
 
 sub preferred_build_command
 	{
-	return $_[0]->perl_command if $_[0]->preferred_build_file eq $_[0]->build_pl;
+	return $_[0]->build_command if $_[0]->preferred_build_file eq $_[0]->build_pl;
 	return $_[0]->make_command if $_[0]->preferred_build_file eq $_[0]->makefile_pl;
 	return;
 	}
@@ -362,7 +362,16 @@ can use a C<make> variant to build the distribution.
 
 =cut
 
-sub make_command { $_[0]->has_makefile_pl ? $Config{make}       : () }
+sub make_command { $_[0]->has_makefile_pl ? $Config{make} : () }
+
+=item build_command
+
+Returns C<./Build>, the script that F<Build.PL> should have created, if
+the distribution has a F<Build.PL>. Otherwise it returns nothing.
+
+=cut
+
+sub build_command { $_[0]->has_build_pl ? './Build' : () }
 
 =item perl_command
 
@@ -371,7 +380,7 @@ to run the F<Makefile.PL> or F<Build.PL>.
 
 =cut
 
-sub perl_command { $_[0]->has_build_pl    ? $_[0]->perl_binary : () }
+sub perl_command { $_[0]->has_build_pl ? $_[0]->perl_binary : () }
 
 =item build_commands
 
@@ -388,7 +397,7 @@ sub build_commands
 	$commands{ $_[0]->make_command } = 1 
 		if $_[0]->has_makefile_pl;
 
-	$commands{ $_[0]->perl_command . " " . $_[0]->build_pl    } = 1 
+	$commands{ $_[0]->perl_command . " " . $_[0]->build_pl } = 1 
 		if $_[0]->has_build_pl;
 
 	return \%commands;
@@ -732,7 +741,7 @@ brian d foy, C<< <bdfoy@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2008, brian d foy, All Rights Reserved.
+Copyright (c) 2008-2010, brian d foy, All Rights Reserved.
 
 You may redistribute this under the same terms as Perl itself.
 
