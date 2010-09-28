@@ -83,7 +83,7 @@ is( $guesser->build_pl_path,
 is( $guesser->preferred_build_file, $guesser->build_pl,
 	"the preferred build file is a Module::Build variant" );
 
-is( $guesser->preferred_build_command, $guesser->perl_command,
+is( $guesser->preferred_build_command, $guesser->build_command,
 	"the preferred build command is a make variant" );
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 

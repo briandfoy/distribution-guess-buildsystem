@@ -34,7 +34,7 @@ my $guesser = $class->new(
 
 ok( $guesser->uses_module_build, "Uses Module::Build" );
 ok( $guesser->uses_module_build_only, "Uses  Module::Build only" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is perl" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -56,7 +56,7 @@ my $guesser = $class->new(
 
 ok( $guesser->uses_module_build, "Uses Module::Build" );
 ok( $guesser->uses_module_build_only, "Uses  Module::Build only" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is perl" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build" );
 }
 
 { # Both
@@ -66,7 +66,7 @@ my $guesser = $class->new(
 
 ok( $guesser->uses_module_build, "Uses Module::Build" );
 ok( $guesser->uses_makemaker,    "Uses  Makemaker" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is perl" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -80,11 +80,11 @@ my $guesser = $class->new(
 
 ok( $guesser->uses_module_build, "Uses Module::Build" );
 ok( $guesser->uses_makemaker,    "Uses  Makemaker" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is perl when explicit no preference" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build when explicit no preference" );
 
 $guesser->prefer_module_build( 1 );
 ok( $guesser->prefer_module_build, "Now prefers Module::Build" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is now perl" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build" );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -98,7 +98,7 @@ my $guesser = $class->new(
 
 ok( $guesser->uses_module_build, "Uses Module::Build" );
 ok( $guesser->uses_makemaker,    "Uses  Makemaker" );
-is( $guesser->preferred_build_command, $guesser->perl_command, "Preferred command is perl when preferring both" );
+is( $guesser->preferred_build_command, $guesser->build_command, "Preferred command is ./Build when preferring both" );
 
 $guesser->prefer_module_build( 0 );
 ok( ! $guesser->prefer_module_build, "Now does not prefer Module::Build" );
