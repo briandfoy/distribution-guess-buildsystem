@@ -62,8 +62,8 @@ is( scalar keys %$hash, 2, "There is only one hash key in build_commands" );
 
 my @keys = sort keys %$hash;
 
-ok( scalar grep { /^[dn]?make\z/ } @keys, 'Uses a make variant' );
-ok( scalar grep { /perl/         } @keys, 'Uses perl' );
+ok( scalar grep { qr/^[nd]?make(?:.exe)?\z/ } @keys, 'Uses a make variant' );
+ok( scalar grep { /perl/                    } @keys, 'Uses perl' );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
