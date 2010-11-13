@@ -1,5 +1,10 @@
 # Changes for Distribution::Guess::BuildSystem
 
+0.12_01 - Sat Nov 13 11:15:23 2010
+	* One of the test regexes to check the perl %Config for
+	make assumed that it was only the basename. I adjusted 
+	it to deal with paths, like C:\\Perl\\bin\\dmake.exe
+
 0.12 - Tue Sep 28 15:49:27 2010
 	Add preferred_* commands so you can get a single answer
 	(instead of a hash) that tells you which command to 
