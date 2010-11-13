@@ -15,7 +15,7 @@ use File::Spec::Functions qw(catfile);
 
 use Module::Extract::VERSION;
 
-$VERSION = '0.12';
+$VERSION = '0.12_01';
 
 =head1 NAME
 
