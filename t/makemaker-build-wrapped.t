@@ -63,8 +63,8 @@ is( scalar keys %$hash, 2, "There is only one hash key in build_commands" );
 
 my @keys = sort keys %$hash;
 
-ok( scalar grep { qr/^[nd]?make(?:.exe)?\z/ } @keys, 'Uses a make variant' );
-ok( scalar grep { /perl/                    } @keys, 'Uses perl' );
+ok( scalar grep { qr/\b[nd]?make(?:.exe)?\z/ } @keys, 'Uses a make variant' );
+ok( scalar grep {   /perl/                   } @keys, 'Uses perl' );
 
 # This Build.PL is a faker. It's just a wrapper around Makefile.PL,
 # so it doesn't really use Build.PL
