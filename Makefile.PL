@@ -1,4 +1,4 @@
-use ExtUtils::MakeMaker 6.55;
+use ExtUtils::MakeMaker 6.64;
 
 require 5.010;
 
@@ -12,10 +12,10 @@ WriteMakefile(
 	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
 	
 	'CONFIGURE_REQUIRES' => {
-		'ExtUtils::MakeMaker' => '6.55',
+		'ExtUtils::MakeMaker' => '6.64',
 		},
 		
-	'BUILD_REQUIRES' => {
+	'TEST_REQUIRES' => {
 		'Test::More'               => '0',
 		'Test::Output'             => '0',
 		},
