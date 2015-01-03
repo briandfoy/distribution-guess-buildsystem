@@ -1,4 +1,3 @@
-# $Id$
 package Distribution::Guess::BuildSystem;
 use strict;
 
