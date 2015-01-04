@@ -1,4 +1,4 @@
-# Changes for Distribution::Guess::BuildSystem
+Revision history for Perl module Distribution::Guess::BuildSystem
 
 0.12_02 - Mon Jan  6 02:23:55 2014
 	* Update META information and *_REQUIRES
