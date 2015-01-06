@@ -1,27 +1,27 @@
 Revision history for Perl module Distribution::Guess::BuildSystem
 
-0.12_02 - Mon Jan  6 02:23:55 2014
+0.12_02 - 2014-01-06
 	* Update META information and *_REQUIRES
 
-0.12_01 - Sat Nov 13 11:15:23 2010
+0.12_01 - 2010-11-13
 	* One of the test regexes to check the perl %Config for
 	make assumed that it was only the basename. I adjusted
 	it to deal with paths, like C:\\Perl\\bin\\dmake.exe
 
-0.12 - Tue Sep 28 15:49:27 2010
+0.12 - 2010-09-28
 	* Add preferred_* commands so you can get a single answer
 	(instead of a hash) that tells you which command to
 	use to setup and build a dist.
 
-0.11 - Wed Oct 29 15:55:32 2008
+0.11 - 2008-10-29
 	* Changes to use the new Module::Extract::Use interface,
 	which doesn't use class methods anymore.
 
-0.10_02 - Mon Aug  4 03:50:42 2008
+0.10_02 - 2008-08-04
 	* Add just_give_me_a_hash() to get a hash of all of the method
 	names and what they would return. This way you get all of the
 	info you'd want right away and you can store it immediately.
 
-0.10_01 - Sat Aug  2 20:48:48 2008
+0.10_01 - 2008-08-02
 	* first release of a module to guess the build system on a
 	Perl module distribution
