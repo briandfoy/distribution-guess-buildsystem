@@ -1,15 +1,16 @@
-use ExtUtils::MakeMaker 6.64;
-
 require 5.010;
+use strict;
+use warnings;
 
-eval "use Test::Manifest 1.21";
+my $github    = 'https://github.com/briandfoy/';
+my $main_file = 'lib/Distribution/Guess/BuildSystem';
 
-WriteMakefile(
-	'NAME'	       => 'Distribution::Guess::BuildSystem',
-	'ABSTRACT'     => 'This is what the module does',
-	'VERSION_FROM' => 'lib/BuildSystem.pm',
-	'LICENSE'      => 'perl',
-	'AUTHOR'       => 'brian d foy <bdfoy@cpan.org>',
+my %WriteMakefile = (
+	'NAME'	        => 'Distribution::Guess::BuildSystem',
+	'ABSTRACT_FROM' => $main_file,
+	'VERSION_FROM'  => $main_file,
+	'LICENSE'       => 'perl',
+	'AUTHOR'        => 'brian d foy <bdfoy@cpan.org>',
 	
 	'CONFIGURE_REQUIRES' => {
 		'ExtUtils::MakeMaker' => '6.64',
@@ -21,19 +22,29 @@ WriteMakefile(
 		},
 		
 	'PREREQ_PM'    => { 
-		'Test::More'               => '0',
 		'Module::Extract::Use'     => "0",
 		'Module::Extract::VERSION' => "0",
 		},
 
-	'PM'           => {
-		'lib/BuildSystem.pm'         => '$(INST_LIBDIR)/BuildSystem.pm',
-		},
-
-	'MAN3PODS'     => {
-		'lib/BuildSystem.pm' => '$(INST_MAN3DIR)/Distribution::Guess::BuildSystem.$(MAN3EXT)',
-		},
-
 	clean  => { FILES    => q|Distribution-Guess-BuildSystem-*| },
-
 	);
+
+sub arguments { \%WriteMakefile }
+
+do_it() unless caller;
+sub do_it {
+	require File::Spec;
+	my $MM ='ExtUtils::MakeMaker';
+	my $MM_version =
+		eval{ "$MM " . $WriteMakefile{'CONFIGURE_REQUIRES'}{'ExtUtils::MakeMaker'} }
+			//
+		"$MM 6.64";
+	eval "use $MM_version";
+	eval "use Test::Manifest 1.21" 
+		if -e File::Spec->catfile( qw(t test_manifest) );
+	WriteMakefile( %WriteMakefile );
+	}
+
+
+no warnings;
+__PACKAGE__;
