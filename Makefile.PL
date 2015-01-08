@@ -2,11 +2,14 @@ require 5.010;
 use strict;
 use warnings;
 
-my $github    = 'https://github.com/briandfoy/';
-my $main_file = 'lib/Distribution/Guess/BuildSystem';
+use File::Spec::Functions qw(catfile);
+
+my $module    = 'Distribution::Guess::BuildSystem';
+my $github    = 'https://github.com/briandfoy/distribution-guess-buildsystem';
+my $main_file = catfile( 'lib', split /::/, "$module.pm" );
 
 my %WriteMakefile = (
-	'NAME'	        => 'Distribution::Guess::BuildSystem',
+	'NAME'	        => $module,
 	'ABSTRACT_FROM' => $main_file,
 	'VERSION_FROM'  => $main_file,
 	'LICENSE'       => 'perl',
@@ -17,13 +20,28 @@ my %WriteMakefile = (
 		},
 		
 	'TEST_REQUIRES' => {
-		'Test::More'               => '0',
-		'Test::Output'             => '0',
+		'Test::More'   => '0.95',
+		'Test::Output' => '0',
 		},
 		
 	'PREREQ_PM'    => { 
 		'Module::Extract::Use'     => "0",
 		'Module::Extract::VERSION' => "0",
+		},
+
+	'META_MERGE' => {
+		'meta-spec' => { version => 2 },
+		resources => {
+			repository => {
+				type => 'git',
+				url  => "$github.git",
+				web  => $github,
+				},
+			bugtraker => {
+				web    => "$github/issues",
+				},
+			homepage => $github,
+			},
 		},
 
 	clean  => { FILES    => q|Distribution-Guess-BuildSystem-*| },
