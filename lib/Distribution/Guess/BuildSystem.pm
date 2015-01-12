@@ -18,7 +18,7 @@ $VERSION = '0.12_02';
 
 =head1 NAME
 
-Distribution::Guess::BuildSystem - This is the description
+Distribution::Guess::BuildSystem - Guess what this distribution uses to build itself
 
 =head1 SYNOPSIS
 
