@@ -1,6 +1,7 @@
 .travis.yml
 Changes
 examples/build_guesser.pl
+INSTALL.SKIP
 lib/Distribution/Guess/BuildSystem.pm
 LICENSE
 Makefile.PL
