@@ -63,3 +63,4 @@
 t/\d
 prereq\.t
 Distribution-.*
+\.travis\.yml
