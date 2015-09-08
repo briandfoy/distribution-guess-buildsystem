@@ -16,6 +16,8 @@ use Module::Extract::VERSION;
 
 $VERSION = '0.12_02';
 
+=encoding utf8
+
 =head1 NAME
 
 Distribution::Guess::BuildSystem - Guess what this distribution uses to build itself
@@ -25,27 +27,27 @@ Distribution::Guess::BuildSystem - Guess what this distribution uses to build it
 	use Distribution::Guess::BuildSystem;
 
 	chdir $dist_dir;
-	
+
 	my $guesser = Distribution::Guess::BuildSystem->new(
 		dist_dir => $dir
 		);
-	
+
 	my $build_files   = $guesser->build_files; # Hash ref
-	
+
 	my $build_pl      = $guesser->has_build_pl;
 	my $makefile_pl   = $guesser->has_makefile_pl;
-	
+
 	my $both          = $guesser->has_build_and_makefile;
-	
+
 	my $build_command = $guesser->build_commands; # Hash ref
-	
-	if( $guesser->uses_module_install ) 
+
+	if( $guesser->uses_module_install )
 		{
 		my $version = $guesser->module_install_version;
 		my $pita    = $guesser->uses_auto_install;
 		}
-		
-	if( $guesser->uses_makemaker )   
+
+	if( $guesser->uses_makemaker )
 		{
 		my $version = $guesser->makemaker_version;
 		my $make    = $guesser->make_command;
@@ -75,9 +77,9 @@ use C<auto_install> to call C<CPAN.pm> at build time.
 
 The trick is to figure out which one you are supposed to use. This module has
 several methods to look at a distribution and guess what its build system is.
-The main object is simply some settings. Every time you want to ask a 
+The main object is simply some settings. Every time you want to ask a
 question about the distribution, the object looks at the distribution. That is,
-it doesn't capture the information when you create the object. 
+it doesn't capture the information when you create the object.
 
 =head2 Methods
 
@@ -92,9 +94,9 @@ Creates a new guesser object. You can set:
 	prefer_module_build - some methods will return the preferred builder
 	prefer_makemaker    - some methods will return the preferred builder
 
-If you prefer 
+If you prefer
 The defaults are:
-	
+
 	dist_dir            - current working directory
 	perl_binary         - $^X (may be relative and no longer in path!)
 	prefer_module_build - true
@@ -104,15 +106,15 @@ The defaults are:
 
 sub new
 	{
-	my %defaults = ( 
+	my %defaults = (
 		dist_dir            => cwd(),
 		prefer_module_build => 1,
-		prefer_makemaker    => 0,		
+		prefer_makemaker    => 0,
 		perl_binary         => $^X,
 		);
-	
+
 	my( $class, %args ) = @_;
-	
+
 	bless { %defaults, %args }, $class;
 	}
 
@@ -176,14 +178,14 @@ sub prefer_module_build
 sub _setting
 	{
 	my( $self, $key, $value ) = @_;
-	
+
 	if( @_ == 3 ) {
 		$self->{$key} = $value;
 		}
 
 	return $self->{$key};
 	}
-	
+
 =back
 
 =head2 Questions about the distribution
@@ -193,7 +195,7 @@ sub _setting
 =item build_files
 
 Returns an hash reference of build files found in the distribution. The
-keys are the filenames of the build files. The values 
+keys are the filenames of the build files. The values
 
 =cut
 
@@ -203,17 +205,17 @@ my @files = (
 	[ qw( has_build_pl    build_pl ) ],
 
 	);
-	
+
 sub build_files
 	{
 	my %found;
-	
+
 	foreach my $pairs ( @files )
 		{
 		my( $check, $file ) = @$pairs;
 		$found{ $_[0]->$file() } = $_[0]->$file() if $_[0]->$check()
 		}
-		
+
 	return \%found;
 	}
 
@@ -242,15 +244,15 @@ sub preferred_build_file
 	return $_[0]->build_pl    if $_[0]->uses_module_build_only;
 
 	# preference now matter
-	return $_[0]->build_pl if( 
+	return $_[0]->build_pl if(
 		$_[0]->prefer_module_build and $_[0]->uses_module_build );
-	return $_[0]->makefile_pl if( 
+	return $_[0]->makefile_pl if(
 		$_[0]->prefer_makemaker and $_[0]->uses_makemaker );
 
 	# absence of preference
 	return $_[0]->build_pl    if $_[0]->uses_module_build;
 	return $_[0]->makefile_pl if $_[0]->uses_makemaker;
-	
+
 	# no build system?
 	return;
 	}
@@ -269,12 +271,12 @@ sub preferred_build_command
 	return $_[0]->make_command if $_[0]->preferred_build_file eq $_[0]->makefile_pl;
 	return;
 	}
-	
+
 =item build_file_paths
 
 Returns an anonymous hash to the paths to the build files, based on
 the dist_dir argument to C<new> and the return value of
-C<build_files>. The keys are the file names and the values are 
+C<build_files>. The keys are the file names and the values are
 the paths.
 
 =cut
@@ -282,12 +284,12 @@ the paths.
 sub build_file_paths
 	{
 	my %paths;
-	
+
 	foreach my $file ( keys %{ $_[0]->build_files } )
 		{
-		$paths{$file} = File::Spec->catfile( $_[0]->dist_dir, $file );	
+		$paths{$file} = File::Spec->catfile( $_[0]->dist_dir, $file );
 		}
-		
+
 	return \%paths;
 	}
 
@@ -298,7 +300,7 @@ sub build_file_paths
 sub makefile_pl_path
 	{
 	return unless $_[0]->has_makefile_pl;
-	
+
 	File::Spec->catfile( $_[0]->dist_dir, $_[0]->makefile_pl );
 	}
 
@@ -309,10 +311,10 @@ sub makefile_pl_path
 sub build_pl_path
 	{
 	return unless $_[0]->has_build_pl;
-	
+
 	File::Spec->catfile( $_[0]->dist_dir, $_[0]->build_pl );
 	}
-	
+
 =item has_build_pl
 
 Has the file name returned by C<build_pl>.
@@ -322,11 +324,11 @@ Has the file name returned by C<build_pl>.
 sub _has_file
 	{
 	my( $self, $file ) = @_;
-	
+
 	my $path = File::Spec->catfile(
 		$self->dist_dir, $file
 		);
-	
+
 	$self->{has}{$file} = $path if -e $path;
 	$self->{has}{$file};
 	}
@@ -349,8 +351,8 @@ Has both the files returned by C<makefile_pl> and C<build_pl>.
 
 sub has_build_and_makefile
 	{
-	$_[0]->has_build_pl 
-		&& 
+	$_[0]->has_build_pl
+		&&
 	$_[0]->has_makefile_pl
 	}
 
@@ -392,11 +394,11 @@ distribution. The keys are the commands, such as C<make> or C<perl Build.PL>.
 sub build_commands
 	{
 	my %commands;
-	
-	$commands{ $_[0]->make_command } = 1 
+
+	$commands{ $_[0]->make_command } = 1
 		if $_[0]->has_makefile_pl;
 
-	$commands{ $_[0]->perl_command . " " . $_[0]->build_pl } = 1 
+	$commands{ $_[0]->perl_command . " " . $_[0]->build_pl } = 1
 		if $_[0]->has_build_pl;
 
 	return \%commands;
@@ -412,14 +414,14 @@ sub _get_modules
 	{
 	my( $self, $path ) = @_;
 	my $extractor = $self->module_extractor_class->new;
-	$extractor->get_modules( $path );	
+	$extractor->get_modules( $path );
 	}
-	
+
 sub uses_makemaker
 	{
 	return unless $_[0]->has_makefile_pl;
-	
-	scalar grep { $_ eq $_[0]->makemaker_name } 
+
+	scalar grep { $_ eq $_[0]->makemaker_name }
 		$_[0]->_get_modules( $_[0]->makefile_pl_path )
 	}
 
@@ -436,7 +438,7 @@ sub uses_makemaker_only
 	return unless $_[0]->has_makefile_pl;
 	return if     $_[0]->has_build_pl;
 
-	return 1;	
+	return 1;
 	}
 
 =item makemaker_version
@@ -448,30 +450,30 @@ Returns the version of Makemaker installed for the perl running this code.
 sub makemaker_version
 	{
 	return unless $_[0]->uses_makemaker;
-	
+
 	my $version = $_[0]->_get_version( $_[0]->makemaker_name );
 	}
 
 sub _get_version
 	{
 	require Module::Extract::VERSION;
-	
+
 	my( $self, $module, @dirs ) = @_;
-	
+
 	@dirs = @INC unless @dirs;
-	
+
 	my $file = catfile( split /::/, $module ) . ".pm";
-	
+
 	foreach my $dir ( @dirs )
 		{
 		my $module = catfile( $dir, $file );
 		next unless -e $module;
-		
+
 		return Module::Extract::VERSION->parse_version_safely( $module );
 		}
-		
+
 	}
-	
+
 =item uses_module_build
 
 Returns true if this distribution uses C<Module::Build>. This means that it
@@ -483,7 +485,7 @@ sub uses_module_build
 	{
 	return unless $_[0]->has_build_pl;
 
-	scalar grep { $_ eq $_[0]->module_build_name } 
+	scalar grep { $_ eq $_[0]->module_build_name }
 		$_[0]->_get_modules( $_[0]->build_pl_path );
 	}
 
@@ -500,7 +502,7 @@ sub uses_module_build_only
 	return unless $_[0]->has_build_pl;
 	return if     $_[0]->has_makefile_pl;
 
-	return 1;	
+	return 1;
 	}
 
 =item module_build_version
@@ -523,10 +525,10 @@ Returns true if this distribution uses C<Module::Install>.
 =cut
 
 sub uses_module_install
-	{		
+	{
 	return unless $_[0]->has_makefile_pl;
 
-	scalar grep { $_ eq $_[0]->module_install_name } 
+	scalar grep { $_ eq $_[0]->module_install_name }
 		$_[0]->_get_modules( $_[0]->makefile_pl_path )
 	}
 
@@ -543,7 +545,7 @@ C<auto_install> in the build file, it returns true.
 sub uses_auto_install
 	{
 	return unless $_[0]->has_makefile_pl && $_[0]->uses_module_install;
-	
+
 	$_[0]->_file_has_string( $_[0]->makefile_pl_path, 'auto_install' );
  	}
 
@@ -557,7 +559,7 @@ sub module_install_version
 	{
 	return unless $_[0]->uses_module_install;
 
-	my $version = $_[0]->_get_version( 
+	my $version = $_[0]->_get_version(
 		 $_[0]->module_install_name,  $_[0]->module_install_dir
 		);
 	}
@@ -575,7 +577,7 @@ C<create_makefile_pl> in the build file, it returns true.
 sub uses_module_build_compat
 	{
 	return unless $_[0]->has_build_pl && $_[0]->uses_module_build;
-	
+
 	$_[0]->_file_has_string( $_[0]->build_pl_path, 'create_makefile_pl' );
 	}
 
@@ -588,11 +590,11 @@ Returns true if C<Build.PL> is a wrapper around C<Makefile.PL>.
 sub build_pl_wraps_makefile_pl
 	{
 	return unless $_[0]->has_build_pl && $_[0]->has_makefile_pl;
-	
-	$_[0]->_file_has_string( $_[0]->build_pl_path, 
-		"Makefile.PL" );	
+
+	$_[0]->_file_has_string( $_[0]->build_pl_path,
+		"Makefile.PL" );
 	}
-	
+
 sub _file_has_string
 	{
 	my $fh;
@@ -601,9 +603,9 @@ sub _file_has_string
 		carp "Could not open $_[1]: $!";
 		return;
 		}
-		
+
 	while( <$fh> ) { return 1 if /\Q$_[2]/ }
-		
+
 	return;
 	}
 
@@ -638,12 +640,12 @@ my @methods = qw(
 sub just_give_me_a_hash
 	{
 	my %hash = ();
-		
+
 	foreach my $method ( @methods )
 		{
 		$hash{ $method } = $_[0]->$method();
 		}
-	
+
 	return \%hash;
 	}
 }
@@ -658,7 +660,7 @@ You may want to override or extend these, so they are methods.
 
 =item makefile_pl
 
-Returns the string used for the Makefile.PL filename. Seems stupid 
+Returns the string used for the Makefile.PL filename. Seems stupid
 until you want to change it in a subclass, which you can do now
 that it's a method. :)
 
@@ -668,7 +670,7 @@ sub makefile_pl { 'Makefile.PL' }
 
 =item build_pl
 
-Returns the string used for the Build.PL filename. Seems stupid 
+Returns the string used for the Build.PL filename. Seems stupid
 until you want to change it in a subclass, which you can do now
 that it's a method. :)
 
