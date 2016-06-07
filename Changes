@@ -1,5 +1,8 @@
 Revision history for Perl module Distribution::Guess::BuildSystem
 
+1.001 2016-06-07T18:30:21Z
+	* Bump to full release
+
 0.12_02 - 2014-01-06
 	* Update META information and *_REQUIRES
 
