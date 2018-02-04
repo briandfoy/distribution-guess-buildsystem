@@ -41,14 +41,12 @@ Distribution::Guess::BuildSystem - Guess what this distribution uses to build it
 
 	my $build_command = $guesser->build_commands; # Hash ref
 
-	if( $guesser->uses_module_install )
-		{
+	if( $guesser->uses_module_install ) {
 		my $version = $guesser->module_install_version;
 		my $pita    = $guesser->uses_auto_install;
 		}
 
-	if( $guesser->uses_makemaker )
-		{
+	if( $guesser->uses_makemaker ) {
 		my $version = $guesser->makemaker_version;
 		my $make    = $guesser->make_command;
 		}
@@ -104,8 +102,7 @@ The defaults are:
 
 =cut
 
-sub new
-	{
+sub new {
 	my %defaults = (
 		dist_dir            => cwd(),
 		prefer_module_build => 1,
@@ -124,8 +121,7 @@ Returns or sets the distribution directory.
 
 =cut
 
-sub dist_dir
-	{
+sub dist_dir {
 	my( $self ) = shift;
 	$self->_setting( 'dist_dir', @_ );
 	}
@@ -138,8 +134,7 @@ a perl binary.
 
 =cut
 
-sub perl_binary
-	{
+sub perl_binary {
 	my( $self ) = shift;
 	$self->_setting( 'perl_binary', @_ );
 	}
@@ -153,8 +148,7 @@ C<prefer_makemaker> and C<prefer_module_build> are true, then
 MakeMaker wins.
 =cut
 
-sub prefer_makemaker
-	{
+sub prefer_makemaker {
 	my( $self ) = shift;
 	$self->_setting( 'prefer_makemaker', @_ );
 	}
@@ -169,14 +163,12 @@ MakeMaker wins.
 
 =cut
 
-sub prefer_module_build
-	{
+sub prefer_module_build {
 	my( $self ) = shift;
 	$self->_setting( 'prefer_module_build', @_ );
 	}
 
-sub _setting
-	{
+sub _setting {
 	my( $self, $key, $value ) = @_;
 
 	if( @_ == 3 ) {
