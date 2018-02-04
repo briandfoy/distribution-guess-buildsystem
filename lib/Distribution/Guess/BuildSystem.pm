@@ -447,13 +447,17 @@ sub _get_version {
 
 	my $file = catfile( split /::/, $module ) . ".pm";
 
+	my $found_module = 0;
 	foreach my $dir ( @dirs ) {
 		my $module = catfile( $dir, $file );
 		next unless -e $module;
 
+		$found_module = 1;
 		return Module::Extract::VERSION->parse_version_safely( $module );
 		}
 
+	return '$module not installed' unless $found_module;
+	return;
 	}
 
 =item uses_module_build
