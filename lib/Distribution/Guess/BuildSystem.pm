@@ -14,7 +14,7 @@ use File::Spec::Functions qw(catfile);
 
 use Module::Extract::VERSION;
 
-$VERSION = '1.001';
+$VERSION = '1.001_01';
 
 =encoding utf8
 
