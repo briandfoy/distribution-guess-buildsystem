@@ -64,9 +64,9 @@ is( $guesser->preferred_build_command, $guesser->make_command,
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # Should be Makefile.PL
-like( $guesser->make_command, 
-	qr/\b[nd]?make(?:.exe)?\z/, 
-	'Build command from %Config is make' 
+like( $guesser->make_command,
+	qr/\b[gnd]?make(?:.exe)?\z/,
+	'Build command from %Config is make'
 	);
 
 is( $guesser->makefile_pl_path, 
@@ -82,7 +82,7 @@ is( scalar keys %$hash, 1, "There is only one hash key in build_commands" );
 
 my @keys = keys %$hash;
 
-like( $keys[0], qr/\b[nd]?make(?:.exe)?\z/, 'Uses a make variant' );
+like( $keys[0], qr/\b[gnd]?make(?:.exe)?\z/, 'Uses a make variant' );
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
