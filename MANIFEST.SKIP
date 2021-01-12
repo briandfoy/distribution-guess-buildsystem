@@ -66,3 +66,6 @@
 t/\d
 prereq\.t
 Distribution-.*
+\bMANIFEST\s\d
+\bChanges\s\d
+
