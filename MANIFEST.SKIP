@@ -68,6 +68,6 @@ prereq\.t
 Distribution-.*
 \bMANIFEST\s\d
 \bChanges\s\d
-
+\.icloud$
 \A\.github\b
 
