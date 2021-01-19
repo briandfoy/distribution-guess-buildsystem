@@ -1,11 +1,10 @@
+use v5.10;
+
 package Distribution::Guess::BuildSystem;
 use strict;
 
 use warnings;
 no warnings;
-
-use subs qw();
-use vars qw($VERSION);
 
 use Carp                  qw(carp);
 use Config                qw(%Config);
