@@ -699,7 +699,7 @@ BEGIN { require Module::Extract::Use }
 
 This source is in Github:
 
-	git://github.com/briandfoy/distribution-guess-buildsystem.git
+	https://github.com/briandfoy/distribution-guess-buildsystem.git
 
 =head1 AUTHOR
 
