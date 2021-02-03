@@ -8,7 +8,7 @@
 
 =for HTML <a href="../../actions?query=workflow%3Awindows"><img src="../../workflows/windows/badge.svg"></a>
 
-=for HTML <a href='https://ci.appveyor.com/project/briandfoy/distribution-guess-buildsystem'><img src='https://ci.appveyor.com/api/projects/status/a?svg=true' /></a>
+=for HTML <a href='https://ci.appveyor.com/project/briandfoy/distribution-guess-buildsystem'><img src='https://ci.appveyor.com/api/projects/status/3eyqyp9qce6n4hrk?svg=true' /></a>
 
 =for HTML <a href='https://coveralls.io/github/briandfoy/distribution-guess-buildsystem?branch=master'><img src='https://coveralls.io/repos/github/briandfoy/distribution-guess-buildsystem/badge.svg?branch=master' alt='Coverage Status' /></a>
 
