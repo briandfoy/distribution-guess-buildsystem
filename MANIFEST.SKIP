@@ -71,3 +71,5 @@ Distribution-.*
 \A\.github\b
 
 \.gitattributes\b
+
+.downstream.json
